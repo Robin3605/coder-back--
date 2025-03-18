@@ -1,4 +1,4 @@
-import espress from "express";
+import express from "express";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import routes from './routes/router.js';
@@ -6,11 +6,13 @@ import { connectDB } from "./config/db.js";
 // import dotenv from "dotenv";
 
 
-const app = espress();
+const app = express();
 // dotenv.config();
 const PORT = process.env.PORT || 3000;
 
-app.use(espress.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.static("public"));
 app.use(cookieParser());
 app.use(session({
     secret: process.env.SESSION_SECRET,

@@ -3,6 +3,7 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import routes from './routes/router.js';
 import { connectDB } from "./config/db.js";
+import passport from "./config/passport/passport.config.js";
 // import dotenv from "dotenv";
 
 
@@ -20,6 +21,8 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false, maxAge: 500000 }, 
 }));
+
+app.use(passport.initialize());
 
 app.use("/api", routes);
 

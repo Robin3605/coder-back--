@@ -9,16 +9,16 @@ const productSchema = new mongoose.Schema({
   price: Number,
   thumbnail: {
     type: Array,
-    default: []
+    default: [],
   },
   code: String,
   stock: Number,
   category: String,
   status: {
     type: Boolean,
-    default: true
-  }
-})
+    default: true,
+  },
+});
 
 productSchema.plugin(mongoosePaginate);
 

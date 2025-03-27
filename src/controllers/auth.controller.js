@@ -1,21 +1,15 @@
-// import bcrypt from "bcrypt";
-// import jwt from "jsonwebtoken";
-import { userDao } from "../persistence/dao/user.dao.js";
-import { comparePassword, hashPassword } from "../utils/hashPassword.js";
 import { createToken } from "../utils/jwt.js";
-import passport from "passport";
-// import mongoose from "mongoose";
 
 export const login = async (req, res) => {
   try {
     const tokenData = {
-        id: req.user._id,
-        email: req.user.email,
-        role: req.user.role
-      }
-       const token = createToken(tokenData)
-       res.cookie("token", token, {httpOnly: true});
-      res.status(200).json({ user: req.user, token });
+      id: req.user._id,
+      email: req.user.email,
+      role: req.user.role,
+    };
+    const token = createToken(tokenData);
+    res.cookie("token", token, { httpOnly: true });
+    res.status(200).json({ user: req.user, token });
   } catch (error) {
     console.error("Error in login controller", error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -50,5 +44,3 @@ export const logout = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
-// aVzQaOzrevVRzjyk

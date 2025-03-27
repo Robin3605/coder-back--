@@ -8,14 +8,14 @@ const userSchema = new mongoose.Schema({
   password: String,
   email: {
     type: String,
-    unique: true
+    unique: true,
   },
   age: Number,
   role: {
     type: String,
-    default: "user"
+    default: "user",
   },
   cart: { type: mongoose.Schema.Types.ObjectId, ref: "cart" },
-})
+});
 
 export const userModel = mongoose.model(userCollection, userSchema);

@@ -2,17 +2,14 @@ import passport from "passport";
 
 export const passportCall = (strategy) => {
   return (req, res, next) => {
-    
     passport.authenticate(strategy, (err, user, info) => {
-      // Validamos si existe un error
-      if(err) return next(err);
-      // Validamos si existe el usuario
-      if(!user) return res.status(401).json({ status: "error", msg: info.message});
+      if (err) return next(err);
 
-      // Si todo sale bien 
+      if (!user)
+        return res.status(401).json({ status: "error", msg: info.message });
+
       req.user = user;
       next();
-    })(req, res, next)
-
-  }
-}
+    })(req, res, next);
+  };
+};

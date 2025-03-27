@@ -3,10 +3,10 @@ import { Strategy, ExtractJwt } from "passport-jwt";
 
 import { userDao } from "../../persistence/dao/user.dao.js";
 
-// Función que extrae el token de la cookie
+
 const cookieExtractor = (req) => {
   let token = null;
-  // Validamos si existe la request y la cookie
+ 
   if (req && req.cookies) {
     token = req.cookies.token;
   }
@@ -18,8 +18,8 @@ const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromExtractors([
     cookieExtractor,
     ExtractJwt.fromAuthHeaderAsBearerToken(),
-  ]), // Configuramos de donde extraemos el token (cookies o headers)
-  secretOrKey: process.env.JWT_SECRET, // Valida si la firma del token es válida
+  ]), 
+  secretOrKey: process.env.JWT_SECRET, 
 };
 
 const jwtStrategy = new Strategy(jwtOptions, async (payload, done) => {

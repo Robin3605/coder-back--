@@ -1,5 +1,6 @@
 // import bcrypt from "bcrypt";
 // import jwt from "jsonwebtoken";
+import { UserResponseDto } from "../dto/responseUser.dto.js";
 import { userDao } from "../persistence/dao/user.dao.js";
 import { comparePassword, hashPassword } from "../utils/hashPassword.js";
 import { createToken } from "../utils/jwt.js";

@@ -3,6 +3,8 @@ import { Strategy } from "passport-local";
 import { userDao } from "../../persistence/dao/user.dao.js";
 import { comparePassword, hashPassword } from "../../utils/hashPassword.js";
 import { cartDao } from "../../persistence/dao/cart.dao.js";
+import { userService } from "../../services/users.service.js";
+import { cartServices } from "../../services/cart.service.js";
 
 // Estrategia de registro
 
@@ -36,7 +38,7 @@ passport.use("register", registerStrategy);
 
 const loginStrategy = new Strategy({ usernameField: "email" }, async (username, password, done) => {
   try {
-    const user = await userDao.getOne({ email: username });
+    const user = await userService.getOne({ email: username });
     if (!user || !comparePassword( password, user.password))
       return done(null, false, { message: "Email o password no válidos" });
 

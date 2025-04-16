@@ -8,11 +8,14 @@ import {
 } from "../controllers/auth.controller.js";
 
 import { passportCall } from "../middleware/passport.middleware.js";
+import { validateSchema } from "../middleware/validateSchema.middleware.js";
+import { loginSchema } from "../schemas/login.schema.js";
+import { registerSchema } from "../schemas/register.schema.js";
 
 const router = Router();
 
-router.post("/login", passportCall("login"), login);
-router.post("/register", passportCall("register"), register);
+router.post("/login",validateSchema(loginSchema), passportCall("login"), login);
+router.post("/register",validateSchema(registerSchema), passportCall("register"), register);
 router.get("/logout", logout);
 router.get(
   "/profile",

@@ -1,5 +1,6 @@
 // import bcrypt from "bcrypt";
 // import jwt from "jsonwebtoken";
+import { UserResponseDto } from "../dto/responseUser.dto.js";
 import { userDao } from "../persistence/dao/user.dao.js";
 import { comparePassword, hashPassword } from "../utils/hashPassword.js";
 import { createToken } from "../utils/jwt.js";
@@ -33,7 +34,8 @@ export const register = async (req, res) => {
 
 export const profile = async (req, res) => {
   try {
-    res.status(200).json({ user: req.user });
+    const userDto = new UserResponseDto(req.user);
+    res.status(200).json({ user: userDto });
   } catch (error) {
     console.log("Error in profile controller", error.message);
     res.status(500).json({ message: "Internal server error" });

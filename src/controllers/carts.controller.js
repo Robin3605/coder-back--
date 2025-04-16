@@ -1,6 +1,4 @@
-// import { cartDao } from "../persistence/dao/cart.dao.js";
 import { cartServices } from "../services/cart.service.js";
-// import { productDao } from "../persistence/dao/products.dao.js";
 import { ticketService } from "../services/ticket.service.js";
 import { productServices } from "../services/products.service.js";
 
@@ -140,12 +138,10 @@ export const purchaseCart = async (req, res) => {
     const { cid } = req.params;
     const cart = await cartServices.getCartById(cid);
     if (!cart)
-      return res
-        .status(404)
-        .json({
-          status: "Error",
-          msg: `No se encontró el carrito con el id ${cid}`,
-        });
+      return res.status(404).json({
+        status: "Error",
+        msg: `No se encontró el carrito con el id ${cid}`,
+      });
 
     const total = await cartServices.purchaseCart(cid);
     const ticket = await ticketService.createTicket(total, req.user.email);

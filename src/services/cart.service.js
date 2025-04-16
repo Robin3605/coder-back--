@@ -31,7 +31,9 @@ class CartServices {
 
   async deleteProductToCart(cid, pid) {
     const cart = await cartDao.getById(cid);
-    cart.products = cart.products.filter((element) => element.product._id.toString() != pid);
+    cart.products = cart.products.filter(
+      (element) => element.product._id.toString() != pid
+    );
     const cartUpdate = await cartDao.update(cid, { products: cart.products });
     return cartUpdate;
   }
@@ -52,26 +54,22 @@ class CartServices {
   async purchaseCart(cid) {
     const cart = await cartDao.getById(cid);
 
-    let total = 0; // El total de la compra de productos con stock
-    const products = []; // Se guardan los productos que no tienen stock y quedan en el carrito
+    let total = 0;
+    const products = [];
 
-    // Lógica de validación de stock y suma del monto total
     for (const productCart of cart.products) {
-      // Buscamos de manera individual cada producto para obtener su stock
       const prod = await productDao.getById(productCart.product);
-      // Validamos si el stock del producto buscado es mayor o igual a la cantidad del carrito
+
       if (prod.stock >= productCart.quantity) {
-        total += prod.price * productCart.quantity; // Sumamos al total de la compra
-        // Actualizamos el stock restando la cantidad de productos del carrito
+        total += prod.price * productCart.quantity;
+
         await productDao.update(prod._id, {
           stock: prod.stock - productCart.quantity,
         });
       } else {
-        // si no hay stock suficiente del producto lo guardamos en nuestro array de productos sin stock
         products.push(productCart);
       }
 
-      // Actualizamos nuestro carrito con los productos que no tenían stock suficiente
       await cartDao.update(cid, { products });
     }
 

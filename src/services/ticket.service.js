@@ -21,16 +21,6 @@ class TicketService {
     await sendEmail(template, "Nuevo ticket de compra", userMail);
     return ticket;
   }
-  //     const newTicket = {
-  //       code: uuid(),
-  //       purchaser: userMail,
-  //       amount,
-  //     };
-
-  //     const ticket = await ticketDao.create(newTicket);
-
-  //     return ticket;
-  //   }
 }
 
 export const ticketService = new TicketService();

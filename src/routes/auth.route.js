@@ -14,8 +14,18 @@ import { registerSchema } from "../schemas/register.schema.js";
 
 const router = Router();
 
-router.post("/login",validateSchema(loginSchema), passportCall("login"), login);
-router.post("/register",validateSchema(registerSchema), passportCall("register"), register);
+router.post(
+  "/login",
+  validateSchema(loginSchema),
+  passportCall("login"),
+  login
+);
+router.post(
+  "/register",
+  validateSchema(registerSchema),
+  passportCall("register"),
+  register
+);
 router.get("/logout", logout);
 router.get(
   "/profile",

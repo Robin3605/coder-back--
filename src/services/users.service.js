@@ -4,9 +4,7 @@ class UserService {
   async getAll() {
     return await userDao.getAll();
   }
-  // async getOne(id) {
-  //   return await userDao.getOne({ _id: id });
-  // }
+
   async getOne(query) {
     return await userDao.getOne(query);
   }
@@ -22,9 +20,3 @@ class UserService {
 }
 
 export const userService = new UserService();
-
-// {
-
-//   "email": "robinson@gmail.com",
-//   "password": "123456"
-// }

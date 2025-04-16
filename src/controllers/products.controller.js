@@ -1,4 +1,3 @@
-// import { productDao } from "../persistence/dao/products.dao.js";
 import { productServices } from "../services/products.service.js";
 
 export const getAllProducts = async (req, res) => {

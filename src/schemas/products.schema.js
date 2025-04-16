@@ -1,13 +1,6 @@
 import { z } from "zod";
 
-// Crear
-
-// editar
-
 export const editProductSchema = {
-  // params: z.object({
-  //   pid: z.string().regex(/^[a-fA-F0-9]{24}$/, "Debe ser un ObjectId"),
-  // }),
   body: z.object({
     title: z.string().optional(),
     description: z.string().optional(),
@@ -19,6 +12,6 @@ export const editProductSchema = {
   }),
   query: z.object({
     name: z.string().min(5),
-    price: z.string()
-  })
+    price: z.string(),
+  }),
 };

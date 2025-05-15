@@ -6,7 +6,7 @@ import routes from "./routes/api/router.js";
 import { connectDB } from "./config/db.js";
 import passport from "./config/passport/passport.config.js";
 import { errorHandler } from "./middleware/errorHandler.middleware.js";
-import { usuariosMockRouter } from "./routes/mocks.route.js";
+import { mockRouter } from "./routes/mocks.route.js";
 import logger from "./helpers/logger.js";
 
 const app = express();
@@ -29,7 +29,7 @@ app.use(
 app.use(passport.initialize());
 
 app.use("/api", routes);
-app.use("/api/mocks", usuariosMockRouter);
+app.use("/api/mocks", mockRouter);
 
 app.use(errorHandler);
 

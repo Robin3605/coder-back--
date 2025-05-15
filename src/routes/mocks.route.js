@@ -6,4 +6,4 @@ const router = Router();
 router.get("/users/:n", createNewMockUsers);
 router.get("/products/:n", createNewMockProducts);
 
-export const usuariosMockRouter = router;
+export const mockRouter = router;

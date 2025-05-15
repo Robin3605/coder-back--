@@ -6,9 +6,9 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
-} from "../controllers/products.controller.js";
-import { passportCall } from "../middleware/passport.middleware.js";
-import { authRole } from "../middleware/authRole.middleware.js";
+} from "../../controllers/products.controller.js";
+import { passportCall } from "../../middleware/passport.middleware.js";
+import { authRole } from "../../middleware/authRole.middleware.js";
 
 const router = Router();
 

@@ -1,9 +1,13 @@
+import "./helpers/envs.js";
 import express from "express";
 import session from "express-session";
 import cookieParser from "cookie-parser";
-import routes from "./routes/router.js";
+import routes from "./routes/api/router.js";
 import { connectDB } from "./config/db.js";
 import passport from "./config/passport/passport.config.js";
+import { errorHandler } from "./middleware/errorHandler.middleware.js";
+import { usuariosMockRouter } from "./routes/mocks.route.js";
+import logger from "./helpers/logger.js";
 
 const app = express();
 
@@ -25,8 +29,11 @@ app.use(
 app.use(passport.initialize());
 
 app.use("/api", routes);
+app.use("/api/mocks", usuariosMockRouter);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log("Server is running on port " + PORT);
+  logger.INFO("Server is running on port " + PORT);
   connectDB();
 });

@@ -1,16 +1,16 @@
 import { Router } from "express";
-import { authRole } from "../middleware/authRole.middleware.js";
+import { authRole } from "../../middleware/authRole.middleware.js";
 import {
   login,
   register,
   logout,
   profile,
-} from "../controllers/auth.controller.js";
+} from "../../controllers/auth.controller.js";
 
-import { passportCall } from "../middleware/passport.middleware.js";
-import { validateSchema } from "../middleware/validateSchema.middleware.js";
-import { loginSchema } from "../schemas/login.schema.js";
-import { registerSchema } from "../schemas/register.schema.js";
+import { passportCall } from "../../middleware/passport.middleware.js";
+import { validateSchema } from "../../middleware/validateSchema.middleware.js";
+import { loginSchema } from "../../schemas/login.schema.js";
+import { registerSchema } from "../../schemas/register.schema.js";
 
 const router = Router();
 

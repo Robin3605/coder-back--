@@ -6,10 +6,10 @@ export class UserResponseDto {
     this.role = user.role;
   }
 
-  age(user) {
-    try {
-    } catch (error) {
-      console.log(`Error: ${error.message}`);
-    }
-  }
+  // age(user) {
+  //   try {
+  //   } catch (error) {
+  //     console.log(`Error: ${error.message}`);
+  //   }
+  // }
 }

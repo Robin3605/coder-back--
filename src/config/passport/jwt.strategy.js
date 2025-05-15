@@ -1,8 +1,11 @@
+import "../../helpers/envs.js";
+import dotenv from "dotenv";
 import passport from "passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 
 import { userDao } from "../../persistence/dao/user.dao.js";
 
+dotenv.config();
 const cookieExtractor = (req) => {
   let token = null;
 

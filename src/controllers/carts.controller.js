@@ -2,38 +2,35 @@ import { cartServices } from "../services/cart.service.js";
 import { ticketService } from "../services/ticket.service.js";
 import { productServices } from "../services/products.service.js";
 
-export const getAllCarts = async (req, res) => {
+export const getAllCarts = async (req, res, next) => {
   try {
     const carts = await cartServices.getAll();
     res.json(carts);
   } catch (error) {
-    console.log("Error in get all carts controller", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const getCartById = async (req, res) => {
+export const getCartById = async (req, res, next) => {
   try {
     const cid = req.params.cid;
     const cart = await cartServices.getCartById(cid);
     res.json(cart);
   } catch (error) {
-    console.log("Error in get cart by id controller", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const createCart = async (req, res) => {
+export const createCart = async (req, res, next) => {
   try {
     const cart = await cartServices.createCart();
     res.json(cart);
   } catch (error) {
-    console.log("Error in create cart controller", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const addProductToCart = async (req, res) => {
+export const addProductToCart = async (req, res, next) => {
   try {
     const { cid, pid } = req.params;
     const product = await productServices.getById(pid);
@@ -53,12 +50,11 @@ export const addProductToCart = async (req, res) => {
 
     res.status(200).json({ status: "ok", payload: cartUpdate });
   } catch (error) {
-    console.log("Error in add product to cart controller", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const deleteProductToCart = async (req, res) => {
+export const deleteProductToCart = async (req, res, next) => {
   try {
     const { cid, pid } = req.params;
     const product = await productServices.getById(pid);
@@ -78,12 +74,11 @@ export const deleteProductToCart = async (req, res) => {
 
     res.status(200).json({ status: "ok", payload: cartUpdate });
   } catch (error) {
-    console.log("Error in delete product to cart controller", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const updateQuantityProductInCart = async (req, res) => {
+export const updateQuantityProductInCart = async (req, res, next) => {
   try {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
@@ -109,15 +104,11 @@ export const updateQuantityProductInCart = async (req, res) => {
 
     res.status(200).json({ status: "ok", payload: cartUpdate });
   } catch (error) {
-    console.log(
-      "Error in update quantity product in cart controller",
-      error.message
-    );
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const clearProductsToCart = async (req, res) => {
+export const clearProductsToCart = async (req, res, next) => {
   try {
     const { cid } = req.params;
     const cart = await cartServices.clearProductsToCart(cid);
@@ -128,12 +119,11 @@ export const clearProductsToCart = async (req, res) => {
 
     res.status(200).json({ status: "ok", cart });
   } catch (error) {
-    console.log("Error in clear products to cart controller", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const purchaseCart = async (req, res) => {
+export const purchaseCart = async (req, res, next) => {
   try {
     const { cid } = req.params;
     const cart = await cartServices.getCartById(cid);
@@ -148,7 +138,6 @@ export const purchaseCart = async (req, res) => {
 
     res.status(200).json({ status: "ok", ticket });
   } catch (error) {
-    console.log("Error in purchase cart controller", error.message);
-    res.status(500).json({ status: "Erro", msg: "Error interno del servidor" });
+    next(error);
   }
 };

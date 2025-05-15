@@ -9,9 +9,9 @@ import {
   updateQuantityProductInCart,
   clearProductsToCart,
   purchaseCart,
-} from "../controllers/carts.controller.js";
-import { passportCall } from "../middleware/passport.middleware.js";
-import { authRole } from "../middleware/authRole.middleware.js";
+} from "../../controllers/carts.controller.js";
+import { passportCall } from "../../middleware/passport.middleware.js";
+import { authRole } from "../../middleware/authRole.middleware.js";
 
 const router = Router();
 

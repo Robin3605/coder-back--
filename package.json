@@ -1,12 +1,16 @@
 {
   "name": "back-ll",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "type": "module",
   "scripts": {
     "start": "node ./app.js --mode=prod",
     "dev": "node --watch  src/app.js",
-    "mock": "node --watch src/app.js --mode=mock"
+    "mock": "node --watch src/app.js --mode=mock",
+    "build-image": "docker build -t coderBack3 .",
+    "image": "docker run -p 8080:9000 coderBack3",
+    "retag-image": "docker tag coderBack3 robin3605/coderBack3:1.0.0",
+    "push-image": "docker push robin3605/codercommerce:1.0.0"
   },
   "keywords": [],
   "author": "",

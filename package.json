@@ -4,13 +4,13 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node ./app.js --mode=prod",
+    "start": "node src/app.js --mode=prod",
     "dev": "node --watch  src/app.js",
     "mock": "node --watch src/app.js --mode=mock",
-    "build-image": "docker build -t coderBack3 .",
-    "image": "docker run -p 8080:9000 coderBack3",
-    "retag-image": "docker tag coderBack3 robin3605/coderBack3:1.0.0",
-    "push-image": "docker push robin3605/codercommerce:1.0.0"
+    "build-image": "docker build --platform linux/arm64 -t coderback3 . --no-cache",
+    "image": "docker run -p 8080:8080 coderback3",
+    "retag-image": "docker tag coderback3 robin3605/coderback3:1.0.0",
+    "push-image": "docker push robin3605/coderback3:1.0.0"
   },
   "keywords": [],
   "author": "",

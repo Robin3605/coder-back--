@@ -1,0 +1,404 @@
+openapi: 3.0.0
+info:
+  title: API de Carritos de Compras
+  version: 1.0.0
+  description: Gestión de carritos de compras y sus productos
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID único del carrito
+        user:
+          type: string
+          description: ID del usuario propietario del carrito
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartProduct'
+        status:
+          type: string
+          enum: [active, completed, pending]
+          default: active
+      example:
+        id: "5f8d0d55b54764421b7156c3"
+        user: "5f7d0d44b54764421b7156a2"
+        products:
+          - product: "63b9a2f1e6a2f3a9e4f7c1d2"
+            quantity: 2
+          - product: "63b9a2f1e6a2f3a9e4f7c1d3"
+            quantity: 1
+        status: active
+
+    CartProduct:
+      type: object
+      properties:
+        product:
+          type: string
+          description: ID del producto
+        quantity:
+          type: integer
+          minimum: 1
+          description: Cantidad del producto en el carrito
+      required:
+        - product
+        - quantity
+      example:
+        product: "63b9a2f1e6a2f3a9e4f7c1d2"
+        quantity: 3
+
+    CartProductUpdate:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+          description: Nueva cantidad del producto
+      required:
+        - quantity
+      example:
+        quantity: 5
+
+    CartCreate:
+      type: object
+      properties:
+        user:
+          type: string
+          description: ID del usuario propietario del carrito
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartProduct'
+          default: []
+      required:
+        - user
+
+    PurchaseResult:
+      type: object
+      properties:
+        cart:
+          $ref: '#/components/schemas/Cart'
+        ticket:
+          type: object
+          properties:
+            id:
+              type: string
+            amount:
+              type: number
+            purchaser:
+              type: string
+        failedProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartProduct'
+      example:
+        cart:
+          id: "5f8d0d55b54764421b7156c3"
+          status: completed
+        ticket:
+          id: "tck-123456789"
+          amount: 150.99
+          purchaser: "user@example.com"
+        failedProducts:
+          - product: "prod-789"
+            quantity: 2
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        error:
+          type: string
+      example:
+        status: 404
+        error: Cart not found
+
+  parameters:
+    CartId:
+      name: cid
+      in: path
+      required: true
+      description: ID del carrito
+      schema:
+        type: string
+      example: "5f8d0d55b54764421b7156c3"
+
+    ProductId:
+      name: pid
+      in: path
+      required: true
+      description: ID del producto
+      schema:
+        type: string
+        format: uuid
+      example: "63b9a2f1e6a2f3a9e4f7c1d2"
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /carts:
+
+    # post:
+    #   summary: Crear un nuevo carrito
+    #   description: Crea un carrito vacío o con productos iniciales
+    #   tags:
+    #     - Carts
+    #   requestBody:
+    #     required: true
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: '#/components/schemas/CartCreate'
+    #   responses:
+    #     201:
+    #       description: Carrito creado exitosamente
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/Cart'
+    #     400:
+    #       description: Datos inválidos
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/ErrorResponse'
+    #     500:
+    #       description: Error del servidor
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/ErrorResponse'
+
+  /carts/{cid}:
+    get:
+      summary: Obtener carrito por ID
+      description: Retorna un carrito específico por su ID
+      tags:
+        - Carts
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+      responses:
+        200:
+          description: Detalles del carrito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        404:
+          description: Carrito no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      summary: Vaciar carrito
+      description: Elimina todos los productos de un carrito
+      tags:
+        - Carts
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+      responses:
+        200:
+          description: Carrito vaciado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        404:
+          description: Carrito no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /carts/{cid}/products/{pid}:
+    post:
+      summary: Agregar producto al carrito
+      description: Agrega un producto al carrito con la cantidad especificada
+      tags:
+        - Carts
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartProduct'
+      responses:
+        200:
+          description: Producto agregado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        400:
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        401:
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        403:
+          description: Prohibido (rol no permitido)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Carrito o producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      summary: Eliminar producto del carrito
+      description: Elimina un producto específico del carrito
+      tags:
+        - Carts
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        200:
+          description: Producto eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        404:
+          description: Carrito, producto o relación no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: Actualizar cantidad de producto
+      description: Actualiza la cantidad de un producto específico en el carrito
+      tags:
+        - Carts
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartProductUpdate'
+      responses:
+        200:
+          description: Cantidad actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        400:
+          description: Cantidad inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Carrito o producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /carts/{cid}/purchase:
+    get:
+      summary: Finalizar compra del carrito
+      description: Procesa la compra del carrito y genera un ticket
+      tags:
+        - Carts
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+      responses:
+        200:
+          description: Compra realizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseResult'
+        400:
+          description: Carrito vacío o inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        401:
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        403:
+          description: Prohibido (rol no permitido)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Carrito no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

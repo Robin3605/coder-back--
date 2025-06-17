@@ -1,0 +1,311 @@
+openapi: 3.0.0
+info:
+  title: API de Gestión de Usuarios
+  version: 1.0.0
+  description: Endpoints para operaciones CRUD de usuarios
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ID único del usuario
+        first_name:
+          type: string
+          description: Nombre del usuario
+        last_name:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          format: email
+          description: Correo electrónico del usuario
+        age:
+          type: integer
+          description: Edad del usuario
+        role:
+          type: string
+          enum: [admin, user, specialist]
+          description: Rol del usuario en el sistema
+        createdAt:
+          type: string
+          format: date-time
+          description: Fecha de creación del usuario
+      required:
+        - first_name
+        - last_name
+        - email
+        - role
+      example:
+        id: 1
+        first_name: Ana
+        last_name: Torres
+        email: ana@example.com
+        age: 28
+        role: user
+        createdAt: "2023-05-15T10:00:00Z"
+
+    UserUpdate:
+      type: object
+      properties:
+        first_name:
+          type: string
+          nullable: true
+        last_name:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+          nullable: true
+        age:
+          type: integer
+          nullable: true
+        role:
+          type: string
+          enum: [admin, user, specialist]
+          nullable: true
+      example:
+        first_name: Ana María
+        last_name: Torres García
+        email: ana.nueva@example.com
+        age: 29
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Código de estado HTTP
+        error:
+          type: string
+          description: Mensaje de error
+      example:
+        status: 404
+        error: User not found
+
+  parameters:
+    UserIdPath:
+      name: uid
+      in: path
+      required: true
+      description: ID del usuario
+      schema:
+        type: integer
+        format: int64
+      example: 1
+
+    PaginationLimit:
+      name: limit
+      in: query
+      description: Número máximo de resultados por página
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+
+    PaginationOffset:
+      name: offset
+      in: query
+      description: Desplazamiento para paginación
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /users:
+    get:
+      summary: Obtiene todos los usuarios
+      description: Retorna una lista paginada de usuarios registrados en el sistema
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PaginationLimit'
+        - $ref: '#/components/parameters/PaginationOffset'
+      responses:
+        200:
+          description: Lista de usuarios obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                example:
+                  users: 
+                    - id: 1
+                      first_name: Ana
+                      last_name: Torres
+                      email: ana@example.com
+                      age: 28
+                      role: user
+                  total: 1
+                  limit: 10
+                  offset: 0
+        401:
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /users/{uid}:
+    get:
+      summary: Obtiene un usuario por su ID
+      description: Retorna los detalles de un usuario específico
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: Detalles del usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: ID inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: Actualiza un usuario existente
+      description: Modifica la información de un usuario registrado
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      requestBody:
+        required: true
+        description: Datos actualizados del usuario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        200:
+          description: Usuario actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        401:
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        403:
+          description: Prohibido (sin permisos)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      summary: Elimina un usuario
+      description: Elimina permanentemente un usuario del sistema
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        204:
+          description: Usuario eliminado exitosamente
+        400:
+          description: ID inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        401:
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        403:
+          description: Prohibido (sin permisos)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

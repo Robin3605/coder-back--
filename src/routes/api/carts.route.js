@@ -1,9 +1,7 @@
 import { Router } from "express";
 
 import {
-  getAllCarts,
   getCartById,
-  createCart,
   addProductToCart,
   deleteProductToCart,
   updateQuantityProductInCart,
@@ -15,13 +13,13 @@ import { authRole } from "../../middleware/authRole.middleware.js";
 
 const router = Router();
 
-router.get("/", getAllCarts);
+
 router.get("/:cid", getCartById);
-router.post("/", createCart);
+
 router.post(
   "/:cid/products/:pid",
   passportCall("jwt"),
-  authRole(["user"]),
+  authRole(["user", "admin"]),
   addProductToCart
 );
 router.delete("/:cid/products/:pid", deleteProductToCart);

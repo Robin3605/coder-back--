@@ -1,0 +1,124 @@
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        title:
+          description: Nombre del producto a comercializar
+          type: string
+        description:
+          description: Breve descripción física del producto
+          type: string
+        category:
+          description: Rubro al que pertenece el producto
+          type: string
+        thumbnail:
+          description: Imagen representativa del producto (URL)
+          type: array
+          items:
+            type: string
+        price:
+          description: Cantidad de solares a pagar por el producto
+          type: float
+          minimum: 0
+        stock:
+          description: Unidades disponibles del producto para vender
+          type: number
+          minimum: 0
+        code:
+          description: Código único del producto
+          type: string
+          example: "ABC123"
+      example:
+        title: Producto 
+        description: Descripción del producto 
+        category: Categoria del producto 
+        thumbnail: [URL del producto maximo 3] 
+        price: 180
+        stock: 10
+        code: "ABC123"
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+paths:
+  /api/products:
+    post:
+      summary: Crear un producto y agregarlo a la base de datos
+      tags:
+        - Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      security:
+        - cookieAuth: []
+    get:
+      summary: Ver los datos de varios productos de la base de datos (puede incluir un filtro)
+      tags:
+        - Product
+  /api/products/{id}:
+    get:
+      summary: Ver los datos de un producto de la base de datos
+      tags:
+        - Product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+    put:
+      summary: Actualizar un producto de la base de datos
+      tags:
+        - Product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  description: Nombre del producto a comercializar
+                  type: string
+                category:
+                  description: Rubro al que pertenece el producto
+                  type: string
+                thumbnail:
+                  description: Imagen representativa del producto (URL)
+                  type: array
+                stock:
+                  description: Unidades disponibles del producto para vender
+                  type: number
+              example:
+                title: Producto 1
+                category: Categoria del producto 1
+                thumbnail: [URL del producto 1]
+                stock: 100
+
+      security:
+        - cookieAuth: []
+    delete:
+      summary: Eliminar un producto de la base de datos
+      tags:
+        - Product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - cookieAuth: []
+    

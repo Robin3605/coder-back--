@@ -26,7 +26,7 @@ router.post(
   passportCall("register"),
   register
 );
-router.get("/logout", logout);
+router.post("/logout", logout);
 router.get(
   "/profile",
   passportCall("jwt"),

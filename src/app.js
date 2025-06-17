@@ -8,6 +8,8 @@ import passport from "./config/passport/passport.config.js";
 import { errorHandler } from "./middleware/errorHandler.middleware.js";
 import { mockRouter } from "./routes/mocks.route.js";
 import logger from "./helpers/logger.js";
+import { serve, setup } from "swagger-ui-express";
+import swaggerSpecs from "./helpers/swagger.js";
 
 const app = express();
 
@@ -26,6 +28,7 @@ app.use(
   })
 );
 
+app.use("/api/docs", serve, setup(swaggerSpecs));
 app.use(passport.initialize());
 
 app.use("/api", routes);
